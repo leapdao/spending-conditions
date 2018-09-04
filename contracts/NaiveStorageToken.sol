@@ -1,16 +1,14 @@
 pragma solidity ^0.4.24;
 
 import 'openzeppelin-solidity/contracts/token/ERC721/ERC721Token.sol';
-import './PatriciaTree.sol';
 
-contract StorageToken is ERC721Token {
+contract NaiveStorageToken is ERC721Token {
   
-  mapping(uint256 => bytes32) public data;
-  PatriciaTree tree;
+  mapping(uint256 => mapping(bytes32 => bytes32)) data;
 
-  constructor(string name, string symbol, address _treeLibAddr) public ERC721Token(name, symbol) {
-    tree = PatriciaTree(_treeLibAddr);
-  }
+  constructor(string name, string symbol) public
+    ERC721Token(name, symbol)
+  { }
 
   function mint(address _to, uint256 _tokenId) public {
     super._mint(_to, _tokenId);
@@ -28,14 +26,14 @@ contract StorageToken is ERC721Token {
     super.removeTokenFrom(_from, _tokenId);
   }
 
-  function verify(uint256 _tokenId, bytes _key, bytes _value, uint _branchMask, bytes32[] _siblings) public view returns (bool) {
+  function read(uint256 _tokenId, bytes32 _key) public view returns (bytes32) {
     require(exists(_tokenId));
-    return tree.verifyProof(data[_tokenId], _key, _value, _branchMask, _siblings);
+    return data[_tokenId][_key];
   }
 
-  function write(uint256 _tokenId, bytes32 _newRoot) public {
+  function write(uint256 _tokenId, bytes32 _key, bytes32 _value) public {
     require(msg.sender == ownerOf(_tokenId));
-    data[_tokenId] = _newRoot;
+    data[_tokenId][_key] = _value;
   }
 
 }

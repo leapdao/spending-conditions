@@ -4,15 +4,14 @@
   "description": "",
   "main": "truffle-config.js",
   "directories": {
-    "test": "truffle compile && truffle test"
+    "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "truffle compile && truffle test"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "openzeppelin-solidity": "1.12.0",
-    "web3-utils": "^1.0.0-beta.36"
+    "openzeppelin-solidity": "1.12.0"
   }
 }

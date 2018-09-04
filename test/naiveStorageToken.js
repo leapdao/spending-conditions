@@ -1,6 +1,6 @@
-const StorageToken = artifacts.require('./StorageToken.sol');
+const StorageToken = artifacts.require('./NaiveStorageToken.sol');
 
-contract('StorageToken', (accounts) => {
+contract('NaiveStorageToken', (accounts) => {
   const name = 'Non-Fungible Storage Token';
   const symbol = 'NFT';
   const firstTokenId = 100;
@@ -13,7 +13,7 @@ contract('StorageToken', (accounts) => {
     await this.token.mint(creator, firstTokenId, { from: creator });
   });
 
-  it('some test', async () => {
+  it('naive key-value store', async () => {
     // initialize contract
     await this.token.write(firstTokenId, web3.utils.toHex('key'), web3.utils.toHex('value'), { from: creator });
     const rsp = await this.token.read(firstTokenId, web3.utils.toHex('key'));
