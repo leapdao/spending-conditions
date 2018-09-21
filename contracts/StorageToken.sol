@@ -2,10 +2,32 @@ pragma solidity ^0.4.24;
 
 import 'openzeppelin-solidity/contracts/token/ERC721/ERC721Token.sol';
 import './PatriciaTree.sol';
+import './StorageTokenInterface.sol';
 
-contract StorageToken is ERC721Token {
+contract StorageToken is ERC721Token, StorageTokenInterface {
   
   mapping(uint256 => bytes32) public data;
+
+  function read(uint256 _tokenId) public view returns (bytes32) {
+    return data[_tokenId];
+  }
+
+  function verify(
+    uint256 _tokenId,     // the token holding the storage root
+    bytes _key,           // key used to do lookup in storage trie
+    bytes _value,         // value expected to be returned
+    uint _branchMask,     // position of value in trie
+    bytes32[] _siblings   // proof of inclusion
+  ) public view returns (bool) {
+    require(exists(_tokenId));
+    return tree.verifyProof(data[_tokenId], _key, _value, _branchMask, _siblings);
+  }
+
+  function write(uint256 _tokenId, bytes32 _newRoot) public {
+    require(msg.sender == ownerOf(_tokenId));
+    data[_tokenId] = _newRoot;
+  }
+
   PatriciaTree tree;
 
   constructor(string name, string symbol, address _treeLibAddr) public ERC721Token(name, symbol) {
@@ -26,16 +48,6 @@ contract StorageToken is ERC721Token {
   
   function _removeTokenFrom(address _from, uint256 _tokenId) public {
     super.removeTokenFrom(_from, _tokenId);
-  }
-
-  function verify(uint256 _tokenId, bytes _key, bytes _value, uint _branchMask, bytes32[] _siblings) public view returns (bool) {
-    require(exists(_tokenId));
-    return tree.verifyProof(data[_tokenId], _key, _value, _branchMask, _siblings);
-  }
-
-  function write(uint256 _tokenId, bytes32 _newRoot) public {
-    require(msg.sender == ownerOf(_tokenId));
-    data[_tokenId] = _newRoot;
   }
 
 }

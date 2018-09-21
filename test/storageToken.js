@@ -84,7 +84,7 @@ contract('StorageToken', (accounts) => {
       web3.utils.toHex('testvalue4'), // value
       proof[0],                       // branchMask
       proof[1],                       // siblings
-    );
+    {from: accounts[0]});
     assert.equal(rsp, true);
   });
 
