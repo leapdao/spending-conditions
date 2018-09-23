@@ -24,11 +24,14 @@ contract SpendingCondition {
         }
     }
 
-    address constant bridgeAddr = 0x8db6B632D743aef641146DC943acb64957155388;    
-    function exitProxy(bytes32 _r, bytes32 _s, uint8 _v, bytes32[] _proof, uint _oindex) public {
+    function exitProxy(
+        bytes32 _r, bytes32 _s, uint8 _v,   // authorization to start exit
+        address _bridgeAddr,                // address of Plasma bridge
+        bytes32[] _proof, uint _oindex      // tx-data, proof and output index
+    ) public {
         address signer = ecrecover(ripemd160(address(this).bytecode()), _v, _r, _s);
         require(signer == spenderAddr);
-        PlasmaInterface bridge = PlasmaInterface(bridgeAddr);
+        PlasmaInterface bridge = PlasmaInterface(_bridgeAddr);
         bridge.startExit(_proof, _oindex);
     }
 

@@ -10,6 +10,6 @@ pragma solidity ^0.4.24;
 
 contract PlasmaInterface {
 
-  function startExit(bytes32[] _proof, uint256 _oindex) public ;
+  function startExit(bytes32[] _proof, uint256 _oindex) public;
 
 }
