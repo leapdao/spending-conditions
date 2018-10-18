@@ -1,12 +1,20 @@
 pragma solidity ^0.4.24;
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
 import "./StorageTokenInterface.sol";
+import "./Reflectable.sol";
 
 contract CounterCondition {
+    using Reflectable for address;
     uint256 constant tokenId = 1234;
+    address constant spenderAddr = 0xF3beAC30C498D9E26865F34fCAa57dBB935b0D74;
     
-    function fulfil(address[] _tokenAddr,               // inputs
+    function fulfil(bytes32 _r, bytes32 _s, uint8 _v,   // signature
+        address[] _tokenAddr,                           // inputs
         address _receiver, uint256 _amount) public {    // outputs
+
+        // check signature
+        address signer = ecrecover(bytes32(ripemd160(address(this).bytecode())), _v, _r, _s);
+        //require(signer == spenderAddr);
 
         // update counter
         StorageTokenInterface stor = StorageTokenInterface(_tokenAddr[1]);

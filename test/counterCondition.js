@@ -20,6 +20,8 @@ const should = chai
 
 
 contract('CounterCondition', (accounts) => {
+  const alice = accounts[0];
+  const alicePriv = '0x278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f';
   const name = 'Non-Fungible Storage Token';
   const symbol = 'NFT';
   const firstTokenId = 1234;
@@ -40,23 +42,23 @@ contract('CounterCondition', (accounts) => {
   });
 
   it('should allow to fulfil condition', async () => {
-    await condition.fulfil([token.address, storage.address], condition.address, 995).should.be.fulfilled;
+    await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], condition.address, 995).should.be.fulfilled;
     let count = await storage.read(firstTokenId);
     assert.equal(Buffer.from(count.replace('0x', ''), 'hex').readIntBE(0, 32), 1);
 
-    await condition.fulfil([token.address, storage.address], condition.address, 995).should.be.fulfilled;
+    await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], condition.address, 995).should.be.fulfilled;
     count = await storage.read(firstTokenId);
     assert.equal(Buffer.from(count.replace('0x', ''), 'hex').readIntBE(0, 32), 2);
 
-    await condition.fulfil([token.address, storage.address], condition.address, 995).should.be.fulfilled;
+    await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], condition.address, 995).should.be.fulfilled;
     count = await storage.read(firstTokenId);
     assert.equal(Buffer.from(count.replace('0x', ''), 'hex').readIntBE(0, 32), 3);
 
-    await condition.fulfil([token.address, storage.address], condition.address, 995).should.be.fulfilled;
+    await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], condition.address, 995).should.be.fulfilled;
     count = await storage.read(firstTokenId);
     assert.equal(Buffer.from(count.replace('0x', ''), 'hex').readIntBE(0, 32), 4);
 
-    await condition.fulfil([token.address, storage.address], accounts[2], 995).should.be.fulfilled;
+    await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], accounts[2], 995).should.be.fulfilled;
   });
 
 });
