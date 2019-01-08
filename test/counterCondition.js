@@ -37,7 +37,7 @@ contract('CounterCondition', (accounts) => {
     token.transfer(condition.address, 1000);
 
     pt = await PatriciaTree.new();
-    storage = await StorageToken.new(name, symbol, pt.address);
+    storage = await StorageToken.new(pt.address);
     await storage.mint(condition.address, firstTokenId);
   });
 

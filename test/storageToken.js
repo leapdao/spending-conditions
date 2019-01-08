@@ -18,7 +18,7 @@ contract('StorageToken', (accounts) => {
 
   beforeEach(async () => {
     pt = await PatriciaTree.new();
-    storageToken = await StorageToken.new(name, symbol, pt.address, { from: creator });
+    storageToken = await StorageToken.new(pt.address, { from: creator });
     await storageToken.mint(creator, firstTokenId, { from: creator });
   });
 

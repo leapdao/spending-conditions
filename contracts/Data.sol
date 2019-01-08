@@ -1,5 +1,11 @@
-pragma solidity ^0.4.16;
-pragma experimental "v0.5.0";
+/**
+ * Copyright (c) 2017-present, Parsec Labs (parseclabs.org)
+ *
+ * This source code is licensed under the Mozilla Public License, version 2,
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+ 
+pragma solidity ^0.5.2;
 pragma experimental "ABIEncoderV2";
 
 import {Bits} from "./Bits.sol";
@@ -119,7 +125,7 @@ library Data {
         return insertNode(self, n);
     }
 
-    function insertAtEdge(Tree storage self, Edge e, Label key, bytes32 value) internal returns (Edge) {
+    function insertAtEdge(Tree storage self, Edge memory e, Label memory key, bytes32 value) internal returns (Edge memory) {
         assert(key.length >= e.label.length);
         Label memory prefix;
         Label memory suffix;
@@ -149,7 +155,7 @@ library Data {
         return Edge(newNodeHash, prefix);
     }
 
-    function insert(Tree storage self, bytes key, bytes value) internal {
+    function insert(Tree storage self, bytes memory key, bytes memory value) internal {
         Label memory k = Label(keccak256(key), 256);
         bytes32 valueHash = keccak256(value);
         Edge memory e;

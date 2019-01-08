@@ -1,5 +1,13 @@
-pragma solidity ^0.4.24;
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20Basic.sol";
+/**
+ * Copyright (c) 2017-present, Parsec Labs (parseclabs.org)
+ *
+ * This source code is licensed under the Mozilla Public License, version 2,
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+ 
+pragma solidity ^0.5.2;
+
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "./StorageTokenInterface.sol";
 
 contract MultisigCondition {
@@ -8,19 +16,19 @@ contract MultisigCondition {
     uint256 constant charlie = 789; // storage token owned by charlie
     uint256 constant threshold = 2;
     
-    function fulfil(address[] _tokenAddr,               // inputs
+    function fulfil(address[] memory _tokenAddr,        // inputs
         address _receiver, uint256 _amount) public {    // outputs
 
         // check condition
         uint256 haveAgreed = 0;
         StorageTokenInterface stor = StorageTokenInterface(_tokenAddr[1]);
-        haveAgreed += address(stor.read(alice)) == _receiver ? 1 : 0;
-        haveAgreed += address(stor.read(bob)) == _receiver ? 1 : 0;
-        haveAgreed += address(stor.read(charlie)) == _receiver ? 1 : 0;
+        haveAgreed += address(uint160(uint256(stor.read(alice)))) == _receiver ? 1 : 0;
+        haveAgreed += address(uint160(uint256(stor.read(bob)))) == _receiver ? 1 : 0;
+        haveAgreed += address(uint160(uint256(stor.read(charlie)))) == _receiver ? 1 : 0;
         require(haveAgreed >= threshold);
         
         // do transfer
-        ERC20Basic token = ERC20Basic(_tokenAddr[0]);
+        ERC20 token = ERC20(_tokenAddr[0]);
         token.transfer(address(_receiver), _amount);
     }
 }

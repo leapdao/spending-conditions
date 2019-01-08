@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2017-present, Parsec Labs (parseclabs.org)
  *
@@ -6,10 +5,12 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.2;
 
 contract PlasmaInterface {
 
-  function startExit(bytes32[] _proof, uint256 _oindex) public;
+  function tokens(uint16 _color) public view returns (address);
+
+  function startExit(bytes32[] memory _proof, uint256 _oindex) public;
 
 }

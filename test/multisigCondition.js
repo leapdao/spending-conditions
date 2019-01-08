@@ -34,7 +34,7 @@ contract('MultisigCondition', (accounts) => {
     token.transfer(condition.address, 1000);
 
     pt = await PatriciaTree.new();
-    storage = await StorageToken.new(name, symbol, pt.address);
+    storage = await StorageToken.new(pt.address);
     await storage.mint(accounts[0], 123);
     await storage.mint(accounts[1], 456);
     await storage.mint(accounts[2], 789);

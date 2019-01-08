@@ -1,4 +1,11 @@
-pragma solidity ^0.4.24;
+/**
+ * Copyright (c) 2017-present, Parsec Labs (parseclabs.org)
+ *
+ * This source code is licensed under the Mozilla Public License, version 2,
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+
+pragma solidity ^0.5.2;
 
 contract StorageTokenInterface {
   
@@ -6,10 +13,10 @@ contract StorageTokenInterface {
 
   function verify(
     uint256 _tokenId,     // the token holding the storage root
-    bytes _key,           // key used to do lookup in storage trie
-    bytes _value,         // value expected to be returned
+    bytes memory _key,           // key used to do lookup in storage trie
+    bytes memory _value,         // value expected to be returned
     uint _branchMask,     // position of value in trie
-    bytes32[] _siblings   // proof of inclusion
+    bytes32[] memory _siblings   // proof of inclusion
   ) public view returns (bool) ;
 
   function write(uint256 _tokenId, bytes32 _newRoot) public;

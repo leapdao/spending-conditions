@@ -37,6 +37,6 @@ contract('PlasmaBridge', (accounts) => {
     );
     // withdraw output
     const event = await condition.exitProxy(`0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v, bridge.address, proof, 0);
-    assert.equal(event.receipt.logs[0].data, transfer.hash());
+    assert.equal(event.receipt.rawLogs[0].data, transfer.hash());
   });
 });

@@ -1,10 +1,17 @@
-pragma solidity ^0.4.24;
+/**
+ * Copyright (c) 2017-present, Parsec Labs (parseclabs.org)
+ *
+ * This source code is licensed under the Mozilla Public License, version 2,
+ * found in the LICENSE file in the root directory of this source tree.
+ */
 
-import 'openzeppelin-solidity/contracts/token/ERC721/ERC721Token.sol';
+pragma solidity ^0.5.2;
+
+import 'openzeppelin-solidity/contracts/token/ERC721/ERC721.sol';
 import './PatriciaTree.sol';
 import './StorageTokenInterface.sol';
 
-contract StorageToken is ERC721Token, StorageTokenInterface {
+contract StorageToken is ERC721, StorageTokenInterface {
   
   mapping(uint256 => bytes32) public data;
 
@@ -14,12 +21,12 @@ contract StorageToken is ERC721Token, StorageTokenInterface {
 
   function verify(
     uint256 _tokenId,     // the token holding the storage root
-    bytes _key,           // key used to do lookup in storage trie
-    bytes _value,         // value expected to be returned
-    uint _branchMask,     // position of value in trie
-    bytes32[] _siblings   // proof of inclusion
+    bytes memory _key,           // key used to do lookup in storage trie
+    bytes memory _value,         // value expected to be returned
+    uint256 _branchMask,     // position of value in trie
+    bytes32[] memory _siblings   // proof of inclusion
   ) public view returns (bool) {
-    require(exists(_tokenId));
+    require(_exists(_tokenId));
     return tree.verifyProof(data[_tokenId], _key, _value, _branchMask, _siblings);
   }
 
@@ -30,7 +37,7 @@ contract StorageToken is ERC721Token, StorageTokenInterface {
 
   PatriciaTree tree;
 
-  constructor(string name, string symbol, address _treeLibAddr) public ERC721Token(name, symbol) {
+  constructor(address _treeLibAddr) public {
     tree = PatriciaTree(_treeLibAddr);
   }
 
@@ -40,14 +47,6 @@ contract StorageToken is ERC721Token, StorageTokenInterface {
 
   function burn(uint256 _tokenId) public {
     super._burn(ownerOf(_tokenId), _tokenId);
-  }
-
-  function setTokenURI(uint256 _tokenId, string _uri) public {
-    super._setTokenURI(_tokenId, _uri);
-  }
-  
-  function _removeTokenFrom(address _from, uint256 _tokenId) public {
-    super.removeTokenFrom(_from, _tokenId);
   }
 
 }

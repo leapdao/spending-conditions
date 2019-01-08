@@ -9,7 +9,7 @@ contract('NaiveStorageToken', (accounts) => {
   let storageToken;
 
   beforeEach(async () => {
-    storageToken = await StorageToken.new(name, symbol, { from: creator });
+    storageToken = await StorageToken.new({ from: creator });
     await storageToken.mint(creator, firstTokenId, { from: creator });
   });
 

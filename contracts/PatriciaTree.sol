@@ -1,5 +1,4 @@
-pragma solidity ^0.4.16;
-pragma experimental "v0.5.0";
+pragma solidity ^0.5.2;
 pragma experimental "ABIEncoderV2";
 
 import {Data} from "./Data.sol";
@@ -28,13 +27,13 @@ contract PatriciaTree is PatriciaTreeFace {
     }
 
     // Get the root edge.
-    function getRootEdge() public view returns (Data.Edge e) {
+    function getRootEdge() public view returns (Data.Edge memory e) {
         e = tree.rootEdge;
     }
 
     // Get the node with the given key. The key needs to be
     // the keccak256 hash of the actual key.
-    function getNode(bytes32 hash) public view returns (Data.Node n) {
+    function getNode(bytes32 hash) public view returns (Data.Node memory n) {
         n = tree.nodes[hash];
     }
 
@@ -43,7 +42,7 @@ contract PatriciaTree is PatriciaTreeFace {
     //  - uint branchMask - bitmask with high bits at the positions in the key
     //                    where we have branch nodes (bit in key denotes direction)
     //  - bytes32[] _siblings - hashes of sibling edges
-    function getProof(bytes key) public view returns (uint branchMask, bytes32[] _siblings) {
+    function getProof(bytes memory key) public view returns (uint branchMask, bytes32[] memory _siblings) {
         require(tree.root != 0);
         Data.Label memory k = Data.Label(keccak256(key), 256);
         Data.Edge memory e = tree.rootEdge;
@@ -77,7 +76,7 @@ contract PatriciaTree is PatriciaTreeFace {
         }
     }
 
-    function verifyProof(bytes32 rootHash, bytes key, bytes value, uint branchMask, bytes32[] siblings) public view returns (bool) {
+    function verifyProof(bytes32 rootHash, bytes memory key, bytes memory value, uint branchMask, bytes32[] memory siblings) public view returns (bool) {
         Data.Label memory k = Data.Label(keccak256(abi.encodePacked(key)), 256);
         Data.Edge memory e;
         e.node = keccak256(value);
@@ -97,7 +96,7 @@ contract PatriciaTree is PatriciaTreeFace {
         return true;
     }
 
-    function insert(bytes key, bytes value) public {
+    function insert(bytes memory key, bytes memory value) public {
         tree.insert(key, value);
     }
 

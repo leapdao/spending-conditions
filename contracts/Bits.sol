@@ -1,5 +1,11 @@
-pragma solidity ^0.4.16;
-pragma experimental "v0.5.0";
+/**
+ * Copyright (c) 2017-present, Parsec Labs (parseclabs.org)
+ *
+ * This source code is licensed under the Mozilla Public License, version 2,
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+ 
+pragma solidity 0.5.2;
 pragma experimental "ABIEncoderV2";
 
 

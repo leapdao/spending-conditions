@@ -10,7 +10,7 @@ import EVMRevert from './helpers/EVMRevert';
 import chai from 'chai';
 import ethUtil from 'ethereumjs-util';
 const SpendingCondition = artifacts.require('./SpendingCondition.sol');
-const SimpleToken = artifacts.require('SimpleToken');
+const SimpleToken = artifacts.require('./mocks/SimpleToken');
 
 const should = chai
   .use(require('chai-as-promised'))
@@ -41,7 +41,7 @@ contract('SpendingCondition', (accounts) => {
     );
     const tx = await condition.fulfil(`0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v, token.address, [accounts[1]], [995]).should.be.fulfilled;
     // check transaction for events
-    assert.equal(tx.receipt.logs[0].address, token.address);
+    assert.equal(tx.receipt.rawLogs[0].address, token.address);
     // assert.equal(tx.receipt.logs[0].topics[1], condition.address);
     // assert.equal(tx.receipt.logs[0].topics[2], accounts[1]);
     const remain = await token.balanceOf(condition.address);

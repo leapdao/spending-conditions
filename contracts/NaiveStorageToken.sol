@@ -1,14 +1,17 @@
-pragma solidity ^0.4.24;
+/**
+ * Copyright (c) 2017-present, Parsec Labs (parseclabs.org)
+ *
+ * This source code is licensed under the Mozilla Public License, version 2,
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+ 
+pragma solidity ^0.5.2;
 
-import 'openzeppelin-solidity/contracts/token/ERC721/ERC721Token.sol';
+import 'openzeppelin-solidity/contracts/token/ERC721/ERC721.sol';
 
-contract NaiveStorageToken is ERC721Token {
+contract NaiveStorageToken is ERC721 {
   
   mapping(uint256 => mapping(bytes32 => bytes32)) data;
-
-  constructor(string name, string symbol) public
-    ERC721Token(name, symbol)
-  { }
 
   function mint(address _to, uint256 _tokenId) public {
     super._mint(_to, _tokenId);
@@ -18,16 +21,8 @@ contract NaiveStorageToken is ERC721Token {
     super._burn(ownerOf(_tokenId), _tokenId);
   }
 
-  function setTokenURI(uint256 _tokenId, string _uri) public {
-    super._setTokenURI(_tokenId, _uri);
-  }
-  
-  function _removeTokenFrom(address _from, uint256 _tokenId) public {
-    super.removeTokenFrom(_from, _tokenId);
-  }
-
   function read(uint256 _tokenId, bytes32 _key) public view returns (bytes32) {
-    require(exists(_tokenId));
+    require(_exists(_tokenId));
     return data[_tokenId][_key];
   }
 

@@ -1,6 +1,13 @@
-pragma solidity ^0.4.24;
+/**
+ * Copyright (c) 2017-present, Parsec Labs (parseclabs.org)
+ *
+ * This source code is licensed under the Mozilla Public License, version 2,
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+ 
+pragma solidity ^0.5.2;
 
-import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 /**
  * @title SimpleToken
@@ -8,7 +15,7 @@ import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
  * Note they can later distribute these tokens as they wish using `transfer` and other
  * `StandardToken` functions.
  */
-contract SimpleToken is StandardToken {
+contract SimpleToken is ERC20 {
 
   string public constant name = "SimpleToken"; // solium-disable-line uppercase
   string public constant symbol = "SIM"; // solium-disable-line uppercase
@@ -20,9 +27,7 @@ contract SimpleToken is StandardToken {
    * @dev Constructor that gives msg.sender all of existing tokens.
    */
   constructor() public {
-    totalSupply_ = INITIAL_SUPPLY;
-    balances[msg.sender] = INITIAL_SUPPLY;
-    emit Transfer(0x0, msg.sender, INITIAL_SUPPLY);
+    _mint(msg.sender, INITIAL_SUPPLY);
   }
 
 }
