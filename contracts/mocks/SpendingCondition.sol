@@ -37,6 +37,9 @@ contract SpendingCondition is Reflectable {
         require(signer == spenderAddr);
 
         // todo: check gasPrice and gasLimit
+        uint transferAmount = uint(_data); // pseudocode
+        uint balance = _tokenAddr.balanceOf(this);
+        require(balance - (_gasPrice * _gasLimit) == transferAmount);
         
         // do transfer
         _tokenAddr.call(_data);
