@@ -12,10 +12,12 @@ import "../PlasmaInterface.sol";
 import "../Reflectable.sol";
 
 contract SpendingCondition is Reflectable {
+    uint constant value = 0;
+    uint constant mainNetNonce = 12345;
     address constant spenderAddr = 0xF3beAC30C498D9E26865F34fCAa57dBB935b0D74;
 
     function fulfil(
-    bytes32 _nonce,
+    bytes32 _nonce,   // 
     uint _gasPrice,
     uint _gasLimit,
     address _to,
@@ -23,13 +25,14 @@ contract SpendingCondition is Reflectable {
     bytes32 _r,
     bytes32 _s,
     uint8 _v) public {
-        
         // check signature
         // if we are on plasma, 'this' is injected sigHash as here: https://github.com/leapdao/leap-node/blob/388aa6c698719e53bf7dee715fe4368c069b6db1/src/tx/applyTx/checkSpendCond.js#L165
-        // if on main-net, the address off the deployed contract needs to be signed
-        // no replay protection after first signature. so spending condition should be emptied with first tx
-        require(_nonce == this); 
-        bytes32 hash = keccak256(_nonce, _gasPrice, _gasLimit, _to, _data);
+        // if on main-net, the address off the deployed contract needs to be signed.
+        // if on main-net, no replay protection after first signature. so spending condition should be emptied with first tx
+        if (_nonce != this) {
+          require(_nonce == mainNetNonce);
+        }
+        bytes32 hash = keccak256(_nonce, _gasPrice, _gasLimit, value, _to, _data);
         address signer = ecrecover(hash, _v, _r, _s);
         require(signer == spenderAddr);
 
