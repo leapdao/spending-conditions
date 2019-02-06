@@ -12,23 +12,28 @@ import "../PlasmaInterface.sol";
 import "../Reflectable.sol";
 
 contract SpendingCondition is Reflectable {
-    uint256 constant nonce = 1234;    // nonce, so that signatures can not be replayed
     address constant spenderAddr = 0xF3beAC30C498D9E26865F34fCAa57dBB935b0D74;
 
-    function fulfil(bytes32 _r, bytes32 _s, uint8 _v,      // signature
-        address _tokenAddr,                               // inputs
-        address[] memory _receivers, uint256[] memory _amounts) public {  // outputs
-        require(_receivers.length == _amounts.length);
+    function fulfil(
+    bytes32 _nonce,
+    uint _gasPrice,
+    uint _gasLimit,
+    address _to,
+    bytes _data,
+    bytes32 _r,
+    bytes32 _s,
+    uint8 _v) public {
         
         // check signature
-        address signer = ecrecover(bytes32(ripemd160(bytecode(address(this)))), _v, _r, _s);
+        require(_nonce == this); // this is injected as here: https://github.com/leapdao/leap-node/blob/388aa6c698719e53bf7dee715fe4368c069b6db1/src/tx/applyTx/checkSpendCond.js#L165
+        bytes32 hash = keccak256(_nonce, _gasPrice, _gasLimit, _to, _data);
+        address signer = ecrecover(hash, _v, _r, _s);
         require(signer == spenderAddr);
+
+        // todo: check gasPrice and gasLimit
         
         // do transfer
-        ERC20 token = ERC20(_tokenAddr);
-        for (uint i = 0; i < _receivers.length; i++) {
-            token.transfer(_receivers[i], _amounts[i]);
-        }
+        _tokenAddr.call(_data);
     }
 
     function exitProxy(
