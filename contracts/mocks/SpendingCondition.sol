@@ -25,7 +25,10 @@ contract SpendingCondition is Reflectable {
     uint8 _v) public {
         
         // check signature
-        require(_nonce == this); // this is injected as here: https://github.com/leapdao/leap-node/blob/388aa6c698719e53bf7dee715fe4368c069b6db1/src/tx/applyTx/checkSpendCond.js#L165
+        // if we are on plasma, 'this' is injected sigHash as here: https://github.com/leapdao/leap-node/blob/388aa6c698719e53bf7dee715fe4368c069b6db1/src/tx/applyTx/checkSpendCond.js#L165
+        // if on main-net, the address off the deployed contract needs to be signed
+        // no replay protection after first signature. so spending condition should be emptied with first tx
+        require(_nonce == this); 
         bytes32 hash = keccak256(_nonce, _gasPrice, _gasLimit, _to, _data);
         address signer = ecrecover(hash, _v, _r, _s);
         require(signer == spenderAddr);
