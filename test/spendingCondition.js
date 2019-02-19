@@ -34,12 +34,12 @@ contract('SpendingCondition', (accounts) => {
     const codeBuf = Buffer.from(condition.constructor._json.deployedBytecode.replace('0x', ''), 'hex')
     const codeHash = ethUtil.ripemd160(codeBuf);
     const hash = Buffer.alloc(32);
-    codeHash.copy(hash);
+    Buffer.from(condition.address.replace('0x', ''), 'hex').copy(hash);
     const sig = ethUtil.ecsign(
       hash,
       Buffer.from(alicePriv.replace('0x', ''), 'hex'),
     );
-    const tx = await condition.fulfil(`0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v, token.address, [accounts[1]], [995]).should.be.fulfilled;
+    const tx = await condition.fulfil(`0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v, token.address, accounts[1], 995).should.be.fulfilled;
     // check transaction for events
     assert.equal(tx.receipt.rawLogs[0].address, token.address);
     // assert.equal(tx.receipt.logs[0].topics[1], condition.address);

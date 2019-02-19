@@ -12,34 +12,34 @@ import "../PlasmaInterface.sol";
 import "../Reflectable.sol";
 
 contract SpendingCondition is Reflectable {
-    uint256 constant nonce = 1234;    // nonce, so that signatures can not be replayed
-    address constant spenderAddr = 0xF3beAC30C498D9E26865F34fCAa57dBB935b0D74;
+  uint256 constant nonce = 1234;    // nonce, so that signatures can not be replayed
+  address constant spenderAddr = 0xF3beAC30C498D9E26865F34fCAa57dBB935b0D74;
 
-    function fulfil(bytes32 _r, bytes32 _s, uint8 _v,      // signature
-        address _tokenAddr,                               // inputs
-        address[] memory _receivers, uint256[] memory _amounts) public {  // outputs
-        require(_receivers.length == _amounts.length);
-        
-        // check signature
-        address signer = ecrecover(bytes32(ripemd160(bytecode(address(this)))), _v, _r, _s);
-        require(signer == spenderAddr);
-        
-        // do transfer
-        ERC20 token = ERC20(_tokenAddr);
-        for (uint i = 0; i < _receivers.length; i++) {
-            token.transfer(_receivers[i], _amounts[i]);
-        }
+  function fulfil(bytes32 _r, bytes32 _s, uint8 _v,      // signature
+    address _tokenAddr,                               // inputs
+    address _receiver, uint256 _amount) public {  // outputs
+    // check signature
+    address contractAddr = address(this);
+    address signer = ecrecover(bytes32(bytes20(contractAddr)), _v, _r, _s);
+    require(signer == spenderAddr);
+    // do transfer
+    IERC20 token = IERC20(_tokenAddr);
+    uint256 diff = token.balanceOf(contractAddr) - _amount;
+    token.transfer(_receiver, _amount);
+    if (diff > 0) {
+      token.transfer(contractAddr, diff);
     }
+  }
 
-    function exitProxy(
-        bytes32 _r, bytes32 _s, uint8 _v,   // authorization to start exit
-        address _bridgeAddr,                // address of Plasma bridge
-        bytes32[] memory _proof, uint _oindex      // tx-data, proof and output index
-    ) public {
-        address signer = ecrecover(ripemd160(bytecode(address(this))), _v, _r, _s);
-        require(signer == spenderAddr);
-        PlasmaInterface bridge = PlasmaInterface(_bridgeAddr);
-        bridge.startExit(_proof, _oindex);
-    }
+  function exitProxy(
+    bytes32 _r, bytes32 _s, uint8 _v,   // authorization to start exit
+    address _bridgeAddr,                // address of Plasma bridge
+    bytes32[] memory _proof, uint _oindex      // tx-data, proof and output index
+  ) public {
+    address signer = ecrecover(ripemd160(bytecode(address(this))), _v, _r, _s);
+    require(signer == spenderAddr);
+    PlasmaInterface bridge = PlasmaInterface(_bridgeAddr);
+    bridge.startExit(_proof, _oindex);
+  }
 
 }

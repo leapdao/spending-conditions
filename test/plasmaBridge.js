@@ -1,5 +1,5 @@
 import EVMRevert from './helpers/EVMRevert';
-import { Period, Block, Tx, Input, Output, Outpoint } from 'parsec-lib';
+import { Period, Block, Tx, Input, Output, Outpoint } from 'leap-core';
 import ethUtil from 'ethereumjs-util';
 import chai from 'chai';
 const PlasmaBridge = artifacts.require('./PlasmaBridge.sol');
