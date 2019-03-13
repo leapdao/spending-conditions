@@ -21,6 +21,6 @@
   "dependencies": {
     "ethers": "^4.0.13",
     "leap-core": "^0.27.0",
-    "openzeppelin-solidity": "=2.1.1",
+    "openzeppelin-solidity": "=2.1.1"
   }
 }
