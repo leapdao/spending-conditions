@@ -1,7 +1,6 @@
 const StorageToken = artifacts.require('./StorageToken.sol');
 const PatriciaTree = artifacts.require('./PatriciaTree.sol');
-import EVMRevert from './helpers/EVMRevert';
-import chai from 'chai';
+const chai = require('chai');
 
 const should = chai
   .use(require('chai-as-promised'))
@@ -63,7 +62,7 @@ contract('StorageToken', (accounts) => {
       web3.utils.toHex('testvalue2'),  // value
       proof[0],                     // branchMask
       proof[1],                     // siblings
-    ).should.be.rejectedWith(EVMRevert);
+    ).should.be.rejectedWith('revert');
   });
 
   it('key-value store with multiple elements', async () => {

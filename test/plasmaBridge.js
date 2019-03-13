@@ -1,7 +1,6 @@
-import EVMRevert from './helpers/EVMRevert';
-import { Period, Block, Tx, Input, Output, Outpoint } from 'leap-core';
-import ethUtil from 'ethereumjs-util';
-import chai from 'chai';
+const { Period, Block, Tx, Input, Output, Outpoint } = require('leap-core');
+const ethUtil = require('ethereumjs-util');
+const chai = require('chai');
 const PlasmaBridge = artifacts.require('./PlasmaBridge.sol');
 const PatriciaTree = artifacts.require('./PatriciaTree.sol');
 const SpendingCondition = artifacts.require('./SpendingCondition.sol');

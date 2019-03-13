@@ -6,9 +6,8 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import EVMRevert from './helpers/EVMRevert';
-import chai from 'chai';
-import ethUtil from 'ethereumjs-util';
+const chai = require('chai');
+const ethUtil = require('ethereumjs-util');
 const SpendingCondition = artifacts.require('./SpendingCondition.sol');
 const SimpleToken = artifacts.require('./mocks/SimpleToken');
 
