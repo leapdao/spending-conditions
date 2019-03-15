@@ -63,6 +63,11 @@ contract LimitOrderCondition {
   }
 
   // used on mainnet or plasma to cancel order
+  // +---------+      +--------+     +-------+
+  // |colorA   |   <--+prevOut |     |colorA |
+  // |condHash |      |msgData +-----+seller |
+  // |amount   |      |script  |     |amount |
+  // +---------+      +--------+     +-------+
   function cancel() public {
     if (msg.sender == seller) {
       IERC20 token = IERC20(sellTokenAddr);
