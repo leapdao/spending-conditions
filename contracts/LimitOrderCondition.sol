@@ -3,6 +3,19 @@ pragma solidity ^0.5.2;
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "./PlasmaBridge.sol";
 
+
+// LimitOrderCondition
+// the order is funded by
+// 1. copiling the code
+// 2. hashing the code to 20 bytes (ripemd)
+// 3. sending funds to the hash
+//
+// sellerTXO   funding         limitOrderUTXO
+// +-------+        +--------+   +---------+
+// |color  |     <--+prevOut |   |color    |
+// |owner  |        |sig     +---+condHash |
+// |amount |        +--------+   |amount   |
+// +-------+                     +---------+
 contract LimitOrderCondition {
   address constant sellTokenAddr = 0x1111111111111111111111111111111111111111;
   address constant buyTokenAddr = 0x2222222222222222222222222222222222222222;
@@ -11,7 +24,22 @@ contract LimitOrderCondition {
   address constant seller = 0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa;
   address constant kyc =   0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC;
 
-  // the buyer calls this function 
+  // spending conditions are fulfilled if
+  // 1. hash of script matches condHash
+  // 2. msgData evaluates the the script to true (transfer events match outputs)
+  //
+  //  TXOs exchanged between seller and buyer
+  // +---------+      +--------+     +-------+
+  // |colorA   |   <--+prevOut |     |colorA |
+  // |condHash |      |msgData +--+--+buyer  |
+  // |amount   |      |script  |  |  |amount |
+  // +---------+      +--------+  |  +-------+
+  //                              |
+  // +---------+      +--------+  |  +-------+
+  // |colorB   |   <--+prevOut |  |  |colorB |
+  // |buyer    |      |sig     +--+--+seller |
+  // |amount   |      +--------+     |amount |
+  // +---------+                     +-------+
   function fill(uint8 _v, bytes32 _r, bytes32 _s) public {
     // check that buyer is authorized to hold token
     address signer = ecrecover(keccak256(abi.encodePacked(sellTokenAddr, msg.sender)), _v, _r, _s);
