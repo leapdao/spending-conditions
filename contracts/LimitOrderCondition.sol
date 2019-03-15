@@ -59,7 +59,7 @@ contract LimitOrderCondition {
     buyToken.transferFrom(buyer, buyer, rest);
 
     // do sellToken transfer
-    sellToken.transfer(msg.sender, orderSize);
+    sellToken.transfer(buyer, orderSize);
   }
 
   // used on mainnet or plasma to cancel order
