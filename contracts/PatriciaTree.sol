@@ -76,10 +76,10 @@ contract PatriciaTree is PatriciaTreeFace {
         }
     }
 
-    function verifyProof(bytes32 rootHash, bytes memory key, bytes memory value, uint branchMask, bytes32[] memory siblings) public view returns (bool) {
-        Data.Label memory k = Data.Label(keccak256(abi.encodePacked(key)), 256);
+    function verifyProof(bytes32 rootHash, bytes32 key, bytes32 value, uint branchMask, bytes32[] memory siblings) public view returns (bool) {
+        Data.Label memory k = Data.Label(key, 256);
         Data.Edge memory e;
-        e.node = keccak256(value);
+        e.node = value;
         for (uint i = 0; branchMask != 0; i++) {
             uint bitSet = branchMask.lowestBitSet();
             branchMask &= ~(uint(1) << bitSet);

@@ -21,8 +21,8 @@ contract StorageToken is ERC721, StorageTokenInterface {
 
   function verify(
     uint256 _tokenId,     // the token holding the storage root
-    bytes memory _key,           // key used to do lookup in storage trie
-    bytes memory _value,         // value expected to be returned
+    bytes32 _key,           // key used to do lookup in storage trie
+    bytes32 _value,         // value expected to be returned
     uint256 _branchMask,     // position of value in trie
     bytes32[] memory _siblings   // proof of inclusion
   ) public view returns (bool) {
