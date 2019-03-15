@@ -39,9 +39,7 @@ contract('SpendingCondition', (accounts) => {
       Buffer.from(alicePriv.replace('0x', ''), 'hex'),
     );
     const data1 = await condition.contract.methods.fulfil(`0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v, accounts[1], 995).encodeABI();
-    console.log(data1);
     const tx = await condition.fulfil(`0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v, accounts[1], 995).should.be.fulfilled;
-    console.log(tx)
     // check transaction for events
     assert.equal(tx.receipt.rawLogs[0].address, token.address);
     // assert.equal(tx.receipt.logs[0].topics[1], condition.address);

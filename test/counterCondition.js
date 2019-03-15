@@ -17,6 +17,9 @@ const should = chai
   .use(require('chai-as-promised'))
   .should();
 
+function hexToString(hexString) {
+  return Buffer.from(hexString.replace('0x', ''), 'hex').readIntBE(28, 4);
+}
 
 contract('CounterCondition', (accounts) => {
   const alice = accounts[0];
@@ -42,20 +45,16 @@ contract('CounterCondition', (accounts) => {
 
   it('should allow to fulfil condition', async () => {
     await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], condition.address, 995).should.be.fulfilled;
-    let count = await storage.read(firstTokenId);
-    assert.equal(Buffer.from(count.replace('0x', ''), 'hex').readIntBE(0, 32), 1);
+    assert.equal(hexToString(await storage.read(firstTokenId)), 1);
 
     await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], condition.address, 995).should.be.fulfilled;
-    count = await storage.read(firstTokenId);
-    assert.equal(Buffer.from(count.replace('0x', ''), 'hex').readIntBE(0, 32), 2);
+    assert.equal(hexToString(await storage.read(firstTokenId)), 2);
 
     await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], condition.address, 995).should.be.fulfilled;
-    count = await storage.read(firstTokenId);
-    assert.equal(Buffer.from(count.replace('0x', ''), 'hex').readIntBE(0, 32), 3);
+    assert.equal(hexToString(await storage.read(firstTokenId)), 3);
 
     await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], condition.address, 995).should.be.fulfilled;
-    count = await storage.read(firstTokenId);
-    assert.equal(Buffer.from(count.replace('0x', ''), 'hex').readIntBE(0, 32), 4);
+    assert.equal(hexToString(await storage.read(firstTokenId)), 4);
 
     await condition.fulfil('0x00', '0x00', 0, [token.address, storage.address], accounts[2], 995).should.be.fulfilled;
   });

@@ -21,7 +21,7 @@ contract CounterCondition is Reflectable {
 
         // check signature
         address signer = ecrecover(bytes32(ripemd160(bytecode(address(this)))), _v, _r, _s);
-        //require(signer == spenderAddr);
+        require(signer == spenderAddr);
 
         // update counter
         StorageTokenInterface stor = StorageTokenInterface(_tokenAddr[1]);
