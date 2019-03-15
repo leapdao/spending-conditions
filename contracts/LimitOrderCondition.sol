@@ -12,8 +12,8 @@ import "./PlasmaBridge.sol";
 //
 // sellerTXO   funding         limitOrderUTXO
 // +-------+        +--------+   +---------+
-// |color  |     <--+prevOut |   |color    |
-// |owner  |        |sig     +---+condHash |
+// |colorA |     <--+prevOut |   |colorA   |
+// |seller |        |sig     +---+condHash |
 // |amount |        +--------+   |amount   |
 // +-------+                     +---------+
 contract LimitOrderCondition {
@@ -30,14 +30,14 @@ contract LimitOrderCondition {
   //
   //  TXOs exchanged between seller and buyer
   // +---------+      +--------+     +-------+
-  // |colorA   |   <--+prevOut |     |colorA |
-  // |condHash |      |msgData +--+--+buyer  |
+  // |colorA   |   <--+prevOut |     |colorB |
+  // |condHash |      |msgData +--+--+seller |
   // |amount   |      |script  |  |  |amount |
   // +---------+      +--------+  |  +-------+
   //                              |
   // +---------+      +--------+  |  +-------+
-  // |colorB   |   <--+prevOut |  |  |colorB |
-  // |buyer    |      |sig     +--+--+seller |
+  // |colorB   |   <--+prevOut |  |  |colorA |
+  // |buyer    |      |sig     +--+--+buyer  |
   // |amount   |      +--------+     |amount |
   // +---------+                     +-------+
   function fill(uint8 _v, bytes32 _r, bytes32 _s) public {
