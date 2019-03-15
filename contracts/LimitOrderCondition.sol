@@ -6,8 +6,8 @@ import "./PlasmaBridge.sol";
 
 // LimitOrderCondition
 // the order is funded by
-// 1. copiling the code
-// 2. hashing the code to 20 bytes (ripemd)
+// 1. compiling the code
+// 2. hashing the code to 20 bytes (ripemd160)
 // 3. sending funds to the hash
 //
 // sellerTXO   funding         limitOrderUTXO
@@ -24,7 +24,7 @@ contract LimitOrderCondition {
   address constant seller = 0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa;
   address constant kyc =   0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC;
 
-  // spending conditions are fulfilled if
+  // spending conditions TXOs are spent if
   // 1. hash of script matches condHash
   // 2. msgData evaluates the the script to true (transfer events match outputs)
   //
