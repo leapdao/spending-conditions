@@ -6,6 +6,8 @@ const { Tx, Outpoint, Input, Output } = require('leap-core');
 
 const provider = new ethers.providers.JsonRpcProvider(process.env['RPC_URL'] || 'http://18.218.2.145:8645');
 
+const RECEIVER_PLACEHOLDER = '1111111111111111111111111111111111111111';
+
 async function main() {
   let msgSender;
   let abi;
@@ -36,10 +38,11 @@ async function main() {
 
   msgSender = process.argv[2];
   abi = new ethers.utils.Interface(spendingCondition.abi);
-  codeBuf = spendingCondition.deployedBytecode;
+  codeBuf = spendingCondition.deployedBytecode.replace(RECEIVER_PLACEHOLDER, msgSender.replace('0x', '').toLowerCase());
+
   codeHash = ethUtil.ripemd160(codeBuf);
   spAddr = '0x' + codeHash.toString('hex');
-  msgData = abi.functions.fulfill.encode(['Hello, Spending Condition', msgSender]);
+  msgData = abi.functions.fulfill.encode(['Hello, Spending Condition']);
 
   console.log(`Please send some tokens to ` + spAddr);
 
@@ -67,7 +70,7 @@ async function main() {
             }
 
             if (newTxHash !== txHash) {
-              console.log('found new unspent UTXO for spending condition', newTxHash);
+              console.log(`found new unspent UTXO(${newTxHash})`);
               txHash = newTxHash;
               resolve(true);
               return;
