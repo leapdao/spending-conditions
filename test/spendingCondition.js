@@ -18,15 +18,26 @@ const should = chai
 
 contract('SpendingCondition', (accounts) => {
   const alice = accounts[0];
+  // address = 0xF3beAC30C498D9E26865F34fCAa57dBB935b0D74
   const alicePriv = '0x278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f';
   let token;
   let condition;
 
   before(async () => {
     token = await SimpleToken.new();
+
+    // replace token address placeholder to real token address
+    let tmp = SpendingCondition._json.bytecode;
+    tmp = tmp.replace('1111111111111111111111111111111111111111', token.address.replace('0x', ''));
+    SpendingCondition._json.bytecode = tmp;
+
+    tmp = SpendingCondition._json.deployedBytecode;
+    tmp = tmp.replace('1111111111111111111111111111111111111111', token.address.replace('0x', ''));
+    SpendingCondition._json.deployedBytecode = tmp;
+
     condition = await SpendingCondition.new();
     // initialize contract
-    token.transfer(condition.address, 1000);
+    await token.transfer(condition.address, 1000);
   });
 
   it('should allow to fulfil condition', async () => {
@@ -42,8 +53,9 @@ contract('SpendingCondition', (accounts) => {
     const tx = await condition.fulfil(`0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v, accounts[1], 995).should.be.fulfilled;
     // check transaction for events
     assert.equal(tx.receipt.rawLogs[0].address, token.address);
-    // assert.equal(tx.receipt.logs[0].topics[1], condition.address);
-    // assert.equal(tx.receipt.logs[0].topics[2], accounts[1]);
+    // bytes32 anyone? :P
+    assert.equal(tx.receipt.rawLogs[0].topics[1], '0x000000000000000000000000' + condition.address.replace('0x', '').toLowerCase());
+    assert.equal(tx.receipt.rawLogs[0].topics[2], '0x000000000000000000000000' + accounts[1].replace('0x', '').toLowerCase());
     const remain = await token.balanceOf(condition.address);
     assert.equal(remain.toNumber(), 5);
   });
