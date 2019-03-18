@@ -16,7 +16,6 @@ contract HashLockCondition {
 
         IERC20 token = IERC20(TOKEN_ADDR);
         uint balance = token.balanceOf(address(this));
-        balance = token.balanceOf(address(this));
 
         token.transfer(RECEIVER, balance);
     }
