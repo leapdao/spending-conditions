@@ -4,9 +4,9 @@ import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "./PlasmaBridge.sol";
 
 contract SimpleMultiSig {
-  address constant alice = 0xCED6Cec7891276E58d9434426831709fcBdD0C49;
-  address constant bob = 0x89C368C9bff1Cb5e374e76dE3c5b744DBc1d23Fc;
-  address constant charlie = 0x2b2B598Faba3661C2e4eaA75f9E6a111d860a86D;
+  address constant alice = 0x89C368C9bff1Cb5e374e76dE3c5b744DBc1d23Fc;
+  address constant bob = 0x2b2B598Faba3661C2e4eaA75f9E6a111d860a86D;
+  address constant charlie = 0xa237080c6c98bcDDf2125ce2bC40f6f528a5f024;
   uint256 constant mutliSigId = 1234; //nonce so that signatures can not be replayed
 
   function fulfil(
