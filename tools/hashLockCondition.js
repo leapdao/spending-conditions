@@ -4,7 +4,7 @@ const ethUtil = require('ethereumjs-util');
 const ethers = require('ethers');
 const { Tx, Outpoint, Input, Output } = require('leap-core');
 
-const provider = new ethers.providers.JsonRpcProvider(process.env['RPC_URL'] || 'http://18.218.2.145:8645');
+const provider = new ethers.providers.JsonRpcProvider(process.env['RPC_URL'] || 'https://testnet-node1.leapdao.org');
 
 const RECEIVER_PLACEHOLDER = '1111111111111111111111111111111111111111';
 const TOKEN_PLACEHOLDER = '2222222222222222222222222222222222222222';
