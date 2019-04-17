@@ -8,11 +8,7 @@
  
 pragma solidity ^0.5.2;
 
-contract IERC1537 {
-
-  function readData(uint256 _tokenId) public view returns (bytes32);
-
-  function writeData(uint256 _tokenId, bytes32 _newData) public;
+contract IERC721 {
 
   function ownerOf(uint256 tokenId) public view returns (address owner);
 
