@@ -23,14 +23,14 @@ contract BreedingCondition {
   //                              +--+receiver|
   //                                 |newId   |
   //                                 +--------+
-  function breed(uint256 _tokenId, uint256 _counter, address _receiver) public {
+  function breed(uint256 _queenId, address _receiver) public {
     // setup
     IERC1537 nst = IERC1537(nftAddr);
     IERC721 nft = IERC721(nftAddr);
-    require(nft.ownerOf(_tokenId) == address(this));
-    require(uint256(nst.readData(_tokenId)) == _counter);
-    uint256 newId = uint256(keccak256(abi.encodePacked(_tokenId, _counter)));
-    nst.writeData(_tokenId, bytes32(_counter + 1));
+    require(nft.ownerOf(_queenId) == address(this));
+    uint256 counter = uint256(nst.readData(_queenId));
+    uint256 newId = uint256(keccak256(abi.encodePacked(_queenId, counter)));
+    nst.writeData(_queenId, bytes32(counter + 1));
     nft.transferFrom(address(this), _receiver, newId);
   }
 
