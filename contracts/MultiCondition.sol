@@ -2,13 +2,15 @@ pragma solidity ^0.5.2;
 
 import "./IERC1537.sol";
 import "./IERC721.sol";
-import "./IERC20.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 contract MultiCondition {
-  address constant nftAddr = 0x1111111111111111111111111111111111111111;
-  address constant nstAddr = 0x2222222222222222222222222222222222222222;
-  address constant erc20Addr1 = 0x3333333333333333333333333333333333333333;
-  address constant erc20Addr2 = 0x4444444444444444444444444444444444444444;
+  
+  
+  address constant erc20Addr1 = 0x1111111111111111111111111111111111111111;
+  address constant erc20Addr2 = 0x2222222222222222222222222222222222222222;
+  address constant nstAddr = 0x3333333333333333333333333333333333333333;
+  address constant nftAddr = 0x5555555555555555555555555555555555555555;
 
   function update(uint256 _tokenId, bytes32 _newData, address _receiver) public {
     IERC1537 nst = IERC1537(nstAddr);
