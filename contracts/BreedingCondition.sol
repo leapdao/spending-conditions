@@ -1,6 +1,6 @@
 pragma solidity ^0.5.2;
 
-import "./IERC1537.sol";
+import "./IERC1948.sol";
 import "./IERC721.sol";
 import "./PlasmaBridge.sol";
 
@@ -25,7 +25,7 @@ contract BreedingCondition {
   //                                 +--------+
   function breed(uint256 _queenId, address _receiver) public {
     // setup
-    IERC1537 nst = IERC1537(nftAddr);
+    IERC1948 nst = IERC1948(nftAddr);
     IERC721 nft = IERC721(nftAddr);
     require(nft.ownerOf(_queenId) == address(this));
     uint256 counter = uint256(nst.readData(_queenId));
