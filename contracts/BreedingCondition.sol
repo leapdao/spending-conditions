@@ -1,49 +1,14 @@
 pragma solidity ^0.5.2;
 
-import "./IERC1537.sol";
-import "./IERC721.sol";
-import "./PlasmaBridge.sol";
+import "./IERC1949.sol";
 
 contract BreedingCondition {
-  address constant nftAddr = 0x1111111111111111111111111111111111111111;
+  address constant nftAddr = 0x3333333333333333333333333333333333333333;
 
-  // spending conditions TXOs are spent if
-  // 1. hash of script matches condHash
-  // 2. msgData evaluates the the script to true (transfer events match outputs)
-  //
-  //  breeding as new output
-  // +---------+      +--------+     +--------+
-  // |counter  |   <--+prevOut |     |count+1 |
-  // |condHash |      |msgData +--+--+condHash|
-  // |tokenId  |      |script  |  |  |tokenId |
-  // +---------+      +--------+  |  +--------+
-  //                              |
-  //                              |  +--------+
-  //                              |  |0x00    |
-  //                              +--+receiver|
-  //                                 |newId   |
-  //                                 +--------+
-  function breed(uint256 _queenId, address _receiver) public {
-    // setup
-    IERC1537 nst = IERC1537(nftAddr);
-    IERC721 nft = IERC721(nftAddr);
-    require(nft.ownerOf(_queenId) == address(this));
-    uint256 counter = uint256(nst.readData(_queenId));
-    uint256 newId = uint256(keccak256(abi.encodePacked(_queenId, counter)));
-    nst.writeData(_queenId, bytes32(counter + 1));
-    nft.transferFrom(address(this), _receiver, newId);
+  function breed(uint256 _queenId, address _receiver, bytes32 _workerData) public {
+    IERC1949 nst = IERC1949(nftAddr);
+    // breeding conditions here
+    nst.breed(_queenId, _receiver, _workerData);
   }
 
-  // startExit 
-  // triggers the exit of all funds to a contract on mainnet
-  // only used on mainnet 
-  address constant bridgeAddr = 0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB;
-  address constant minterAddr = 0x2222222222222222222222222222222222222222;
-
-  function startExit(bytes32[] memory _proof, uint _oindex) public {
-    if (msg.sender == minterAddr) {
-      PlasmaBridge bridge = PlasmaBridge(bridgeAddr);
-      bridge.startExit(_proof, _oindex);
-    }
-  }
 }

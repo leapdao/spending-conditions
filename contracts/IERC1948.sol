@@ -8,7 +8,7 @@
  
 pragma solidity ^0.5.2;
 
-contract IERC1537 {
+contract IERC1948 {
 
   function readData(uint256 _tokenId) public view returns (bytes32);
 

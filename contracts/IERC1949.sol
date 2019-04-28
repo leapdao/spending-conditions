@@ -8,12 +8,10 @@
  
 pragma solidity ^0.5.2;
 
-contract IERC721 {
+import "./IERC1948.sol";
 
-  function ownerOf(uint256 tokenId) public view returns (address owner);
+contract IERC1949 is IERC1948 {
 
-  function transferFrom(address from, address to, uint256 tokenId) public;
-
-  function mint(address to, uint256 tokenId) public returns (bool);
+  function breed(uint256 _queenId, address _to, bytes32 _workerData) public;
 
 }
