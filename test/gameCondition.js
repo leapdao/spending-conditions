@@ -22,8 +22,8 @@ function replaceAll(str, find, replace) {
 
 contract('GameCondition', (accounts) => {
   const house = accounts[0];
-  const player = '0xF3beAC30C498D9E26865F34fCAa57dBB935b0D74';
-  const playerPriv = '0x278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f';
+  const player = accounts[1];
+  const playerPriv = '0x2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501201';
   let token;
   let originalByteCode;
 
@@ -47,13 +47,13 @@ contract('GameCondition', (accounts) => {
     tmp = replaceAll(tmp, '2345222222222222222222222222222222222222222222222222222222222222', cards);
     // house
     tmp = replaceAll(tmp, '3456333333333333333333333333333333333333', house);
-    // player
-    tmp = replaceAll(tmp, '4567444444444444444444444444444444444444', player);
     GameCondition._json.bytecode = tmp;
 
     const condition = await GameCondition.new();
     // initialize contract
     await token.transfer(condition.address, 1000);
+    await token.transfer(player, 1000);
+    await token.approve(condition.address, 1000, {from: player});
     const permutation = '0x0000000000000000000000000000000000000000000002060307040801050409';
     const hash = ethUtil.hashPersonalMessage(Buffer.from(permutation.replace('0x', ''), 'hex'));
     const sig = ethUtil.ecsign(
@@ -62,11 +62,11 @@ contract('GameCondition', (accounts) => {
     );
     const tx = await condition.fulfill(permutation, `0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v).should.be.fulfilled;
     // check transaction for events
-    assert.equal(tx.receipt.rawLogs[0].address, token.address);
-    assert.equal(tx.receipt.rawLogs.length, 1);
+    assert.equal(tx.receipt.rawLogs[2].address, token.address);
+    assert.equal(tx.receipt.rawLogs.length, 3);
     
-    assert.equal(tx.receipt.rawLogs[0].topics[1], '0x000000000000000000000000' + condition.address.replace('0x', '').toLowerCase());
-    assert.equal(tx.receipt.rawLogs[0].topics[2], '0x000000000000000000000000' + player.replace('0x', '').toLowerCase());
+    assert.equal(tx.receipt.rawLogs[2].topics[1], '0x000000000000000000000000' + condition.address.replace('0x', '').toLowerCase());
+    assert.equal(tx.receipt.rawLogs[2].topics[2], '0x000000000000000000000000' + player.replace('0x', '').toLowerCase());
     const remain = await token.balanceOf(condition.address);
     assert.equal(remain.toNumber(), 0);
   });
@@ -82,13 +82,13 @@ contract('GameCondition', (accounts) => {
     tmp = replaceAll(tmp, '2345222222222222222222222222222222222222222222222222222222222222', cards);
     // house
     tmp = replaceAll(tmp, '3456333333333333333333333333333333333333', house);
-    // player
-    tmp = replaceAll(tmp, '4567444444444444444444444444444444444444', player);
     GameCondition._json.bytecode = tmp;
 
     const condition = await GameCondition.new();
     // initialize contract
     await token.transfer(condition.address, 1000);
+    await token.transfer(player, 1000);
+    await token.approve(condition.address, 1000, {from: player});
     const permutation = '0x0000000000000000000000000000000000000000000001050406030702080109';
     const hash = ethUtil.hashPersonalMessage(Buffer.from(permutation.replace('0x', ''), 'hex'));
     const sig = ethUtil.ecsign(
@@ -97,11 +97,12 @@ contract('GameCondition', (accounts) => {
     );
     const tx = await condition.fulfill(permutation, `0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v).should.be.fulfilled;
     // check transaction for events
-    assert.equal(tx.receipt.rawLogs[0].address, token.address);
-    assert.equal(tx.receipt.rawLogs.length, 2);
+    assert.equal(tx.receipt.rawLogs[2].address, token.address);
+    assert.equal(tx.receipt.rawLogs.length, 4);
     
-    assert.equal(tx.receipt.rawLogs[0].topics[1], '0x000000000000000000000000' + condition.address.replace('0x', '').toLowerCase());
-    assert.equal(tx.receipt.rawLogs[0].topics[2], '0x000000000000000000000000' + house.replace('0x', '').toLowerCase());
+    assert.equal(tx.receipt.rawLogs[2].topics[1], '0x000000000000000000000000' + condition.address.replace('0x', '').toLowerCase());
+    assert.equal(tx.receipt.rawLogs[2].topics[2], '0x000000000000000000000000' + house.replace('0x', '').toLowerCase());
+    assert.equal(tx.receipt.rawLogs[3].topics[2], '0x000000000000000000000000' + player.replace('0x', '').toLowerCase());
     const remain = await token.balanceOf(condition.address);
     assert.equal(remain.toNumber(), 0);
   });
@@ -117,13 +118,13 @@ contract('GameCondition', (accounts) => {
     tmp = replaceAll(tmp, '2345222222222222222222222222222222222222222222222222222222222222', cards);
     // house
     tmp = replaceAll(tmp, '3456333333333333333333333333333333333333', house);
-    // player
-    tmp = replaceAll(tmp, '4567444444444444444444444444444444444444', player);
     GameCondition._json.bytecode = tmp;
 
     const condition = await GameCondition.new();
     // initialize contract
     await token.transfer(condition.address, 1000);
+    await token.transfer(player, 1000);
+    await token.approve(condition.address, 1000, {from: player});
     const permutation = '0x0000000000000000000000000000000000000000000002060307010801050109';
     const hash = ethUtil.hashPersonalMessage(Buffer.from(permutation.replace('0x', ''), 'hex'));
     const sig = ethUtil.ecsign(
@@ -132,11 +133,11 @@ contract('GameCondition', (accounts) => {
     );
     const tx = await condition.fulfill(permutation, `0x${sig.r.toString('hex')}`, `0x${sig.s.toString('hex')}`, sig.v).should.be.fulfilled;
     // check transaction for events
-    assert.equal(tx.receipt.rawLogs[0].address, token.address);
-    assert.equal(tx.receipt.rawLogs.length, 1);
+    assert.equal(tx.receipt.rawLogs[2].address, token.address);
+    assert.equal(tx.receipt.rawLogs.length, 3);
     
-    assert.equal(tx.receipt.rawLogs[0].topics[1], '0x000000000000000000000000' + condition.address.replace('0x', '').toLowerCase());
-    assert.equal(tx.receipt.rawLogs[0].topics[2], '0x000000000000000000000000' + house.replace('0x', '').toLowerCase());
+    assert.equal(tx.receipt.rawLogs[2].topics[1], '0x000000000000000000000000' + condition.address.replace('0x', '').toLowerCase());
+    assert.equal(tx.receipt.rawLogs[2].topics[2], '0x000000000000000000000000' + house.replace('0x', '').toLowerCase());
     const remain = await token.balanceOf(condition.address);
     assert.equal(remain.toNumber(), 0);
   });

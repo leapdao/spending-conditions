@@ -70,12 +70,9 @@ contract GameCondition {
   // example: 0x0000000000000000000000000105040603070208010901050206030704080409
   bytes32 constant CARD_BYTES = 0x2345222222222222222222222222222222222222222222222222222222222222;
   address constant HOUSE = 0x3456333333333333333333333333333333333333;
-  address constant PLAYER = 0x4567444444444444444444444444444444444444;
 
   function fulfill(bytes32 _cardsPlayer, bytes32 _r, bytes32 _s, uint8 _v) public {
-    // check signature
     address signer = _ecRecoverPersonal(_cardsPlayer, _v, _r, _s);
-    require(signer == PLAYER, "sig does not match");
 
     // check cards
     uint256[] memory cards = readCards(CARD_BYTES);
@@ -90,15 +87,15 @@ contract GameCondition {
     // pull funds
     IERC20 token = IERC20(TOKEN_ADDR);
     uint256 balance = token.balanceOf(address(this));
-    //token.transferFrom(PLAYER, address(this), balance / 5);
+    token.transferFrom(signer, address(this), balance / 5);
     balance = token.balanceOf(address(this));
     
     if (result == 0) {
       token.transfer(HOUSE, (balance / 6) * 5);
       balance = token.balanceOf(address(this));
-      token.transfer(PLAYER, balance);
+      token.transfer(signer, balance);
     } else if (result == 2) {
-      token.transfer(PLAYER, balance);
+      token.transfer(signer, balance);
     } else {
       token.transfer(HOUSE, balance);
     }
