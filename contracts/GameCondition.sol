@@ -104,8 +104,7 @@ contract GameCondition {
     // pull funds
     IERC20 token = IERC20(TOKEN_ADDR);
     uint256 balance = token.balanceOf(address(this));
-    // TODO: fix allowance
-    // token.transferFrom(PLAYER, address(this), balance / 5);
+    token.transferFrom(PLAYER, address(this), balance / 5);
     balance = token.balanceOf(address(this));
 
     // find winner
