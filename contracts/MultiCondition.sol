@@ -1,8 +1,8 @@
 pragma solidity ^0.5.2;
 
 import "./IERC1948.sol";
-import "./IERC721.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-solidity/contracts/token/ERC721/IERC721.sol";
 
 contract MultiCondition {
   address constant erc20Addr1 = 0x1111111111111111111111111111111111111111;
@@ -12,15 +12,19 @@ contract MultiCondition {
 
   function update(uint256 _tokenId, bytes32 _newData, address _receiver) public {
     IERC1948 nst = IERC1948(nstAddr);
-    nst.writeData(_tokenId, _newData);
+    nst.transferFrom(_receiver, address(this), _tokenId);
 
     IERC721 nft = IERC721(nftAddr);
-    nft.transferFrom(address(this), _receiver, _tokenId);
+    // address approver = nft.getApproved(_tokenId);
+    nft.transferFrom(_receiver, address(this), _tokenId);
 
     IERC20 token1 = IERC20(erc20Addr1);
-    token1.transfer(_receiver, token1.balanceOf(address(this)));
+    uint allowance = token1.allowance(_receiver, address(this));
+    // from > to > value
+    token1.transferFrom(_receiver, address(this), allowance);
 
     IERC20 token2 = IERC20(erc20Addr2);
-    token2.transfer(_receiver, token2.balanceOf(address(this)));
+    allowance = token2.allowance(_receiver, address(this));
+    token2.transferFrom(_receiver, address(this), allowance);
   }
 }
