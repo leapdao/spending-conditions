@@ -8,7 +8,12 @@ contract Earth {
 
     address constant CO2 = 0x1231111111111111111111111111111111111123;
     address constant DAI = 0x2341111111111111111111111111111111111234;
+    // passports is an NFT contract, which holds a token for each participant
+    // of an event. The passport contains country the holder belongs to and the
+    // amount of CO2 released.
     address constant PASSPORTS_ADDR = 0x3451111111111111111111111111111111111345;
+    // CO2 flows from Earth to Air and maybe back. This is the address of the
+    // air contract.
     address constant AIR_ADDR = 0x4561111111111111111111111111111111111456;
     
     function trade(
