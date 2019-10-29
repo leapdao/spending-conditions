@@ -51,8 +51,7 @@ async function main() {
 
   console.log(`Please send some tokens to ` + spAddr);
 
-  let txHash = '';
-  let firstFetch = true;
+  let txs;
 
   while (true) {
     const done = await new Promise(
@@ -62,26 +61,22 @@ async function main() {
           console.log(`Calling: plasma_unspent [${spAddr}]`);
 
           let res = await provider.send('plasma_unspent', [spAddr]);
-          let tx = res[0];
 
-          if (tx) {
-            let newTxHash = tx.outpoint.substring(0, 66);
-
-            if (firstFetch) {
-              txHash = newTxHash;
-              firstFetch = false;
+          if (res.length) {
+            if (!txs) {
+              txs = res.map(t => t.outpoint);
               resolve(false);
               return;
             }
 
-            if (newTxHash !== txHash) {
-              console.log(`found new unspent UTXO(${newTxHash})`);
-              txHash = newTxHash;
+            [newTxHash] = res.filter(t => txs.indexOf(t.outpoint) < 0);
+            if (newTxHash) {
+              txHash = newTxHash.outpoint.substring(0, 66);
+              console.log(`found new unspent UTXO(${txHash})`);
               resolve(true);
               return;
             }
           }
-          firstFetch = false;
           resolve(false);
         }, 3000);
       }
