@@ -26,11 +26,11 @@ async function main() {
     return;
   }
 
-  if (process.argv.length < 4) {
+  if (process.argv.length < 3) {
     console.log(
-      'Usage: <token address> <message sender address>\n' +
+      'Usage: <message sender address>\n' +
       'Example:' +
-      '\n\t0x91c0E6801f148B77C118494ff944290999f67656 0x9D4F8216808F7dFbB919cF5e579c1894a1E197C3' +
+      '\n\t0x9D4F8216808F7dFbB919cF5e579c1894a1E197C3' +
       '\nEnvironment Variables:' +
       '\n\tRPC_URL'
     );
@@ -38,8 +38,11 @@ async function main() {
     process.exit(0);
   }
 
-  tokenAddr = process.argv[2];
-  msgSender = process.argv[3];
+  const [leapToken] = await provider.send('plasma_getColors', []);
+
+  // we can pay for gas only with LEAP, so it is always LEAP here for simplicity
+  tokenAddr = leapToken;
+  msgSender = process.argv[2];
   abi = new ethers.utils.Interface(spendingCondition.abi);
   codeBuf = spendingCondition.deployedBytecode
     .replace(RECEIVER_PLACEHOLDER, msgSender.replace('0x', '').toLowerCase())
