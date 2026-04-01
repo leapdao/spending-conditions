@@ -96,17 +96,41 @@ async function main() {
   let txIndex = tx.transactionIndex;
   let txValue = tx.value;
 
+  // Get current gas price from the network
+  let gasPrice;
+  try {
+    const feeData = await provider.getFeeData();
+    gasPrice = feeData.gasPrice || feeData.maxFeePerGas || 0;
+    console.log(`Using gas price: ${gasPrice.toString()}`);
+  } catch (e) {
+    console.warn('Failed to get fee data, using default gas price of 0');
+    gasPrice = 0;
+  }
+
+  // Estimate gas limit for the transaction
+  const GAS_LIMIT = 100000; // Conservative estimate for spending condition execution
+
+  // Calculate total gas cost
+  const gasCost = gasPrice * GAS_LIMIT;
+  console.log(`Estimated gas cost: ${gasCost.toString()}`);
+
+  // Adjust output value to account for gas cost
+  const outputValue = txValue - gasCost > 0 ? txValue - gasCost : 0;
+  if (outputValue === 0) {
+    console.warn('Warning: Output value is 0 after gas deduction');
+  }
+
   // create the spending condition
   const input = new Input(
     {
       prevout: new Outpoint(txHash, txIndex),
-      gasPrice: 0,
+      gasPrice: gasPrice,
       script: codeBuf,
     }
   );
   input.setMsgData(msgData);
 
-  const output = new Output(txValue, msgSender, 0);
+  const output = new Output(outputValue, msgSender, 0);
   const condTx = Tx.spendCond(
     [input],
     [output]
