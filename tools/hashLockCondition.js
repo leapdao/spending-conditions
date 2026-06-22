@@ -94,13 +94,13 @@ async function main() {
 
   let tx = await provider.send('eth_getTransactionByHash', [txHash]);
   let txIndex = tx.transactionIndex;
-  let txValue = tx.value;
+  let txValue = typeof tx.value === "string" ? tx.value : ethers.utils.hexlify(tx.value);
 
   // create the spending condition
   const input = new Input(
     {
       prevout: new Outpoint(txHash, txIndex),
-      gasPrice: 0,
+      gasPrice: 1,
       script: codeBuf,
     }
   );
